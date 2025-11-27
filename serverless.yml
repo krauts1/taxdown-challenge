@@ -1,0 +1,48 @@
+service: challenge-taxdown
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL}
+    LOG_LEVEL: ${env:LOG_LEVEL, 'info'}
+    NODE_ENV: ${env:NODE_ENV, 'production'}
+  httpApi:
+    cors: true
+
+functions:
+  api:
+    handler: dist/infrastructure/serverless/handler.handler
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: ANY
+      - httpApi:
+          path: /
+          method: ANY
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+    noPrependStageInUrl: true
+
+package:
+  patterns:
+    - '!node_modules/.prisma/client/query_engine-*'
+    - '!node_modules/@prisma/engines/**'
+    - 'node_modules/.prisma/client/libquery_engine-linux-arm64-openssl-3.0.x.so.node'
+    - 'prisma/schema.prisma'
+    - '!src/**'
+    - '!tests/**'
+    - '!*.md'
+    - '!tsconfig.json'
+    - '!.env*'
+    - '!.git/**'
+
