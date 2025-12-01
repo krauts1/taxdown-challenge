@@ -5,15 +5,12 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "vercel-build": "prisma generate && tsc",
     "dev": "tsx watch src/infrastructure/http/server.ts",
     "start": "node dist/infrastructure/http/server.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "db:migrate": "echo 'Run migrations from Supabase Dashboard -> SQL Editor or use Supabase CLI'",
     "deploy": "serverless deploy",
     "deploy:dev": "serverless deploy --stage dev",
     "deploy:prod": "serverless deploy --stage prod",
@@ -25,8 +22,7 @@
   "dependencies": {
     "@fastify/aws-lambda": "^3.5.0",
     "@fastify/cors": "^9.0.1",
-    "@prisma/client": "^5.7.1",
-    "@vercel/node": "^3.0.7",
+    "@supabase/supabase-js": "^2.86.0",
     "fastify": "^4.25.2"
   },
   "devDependencies": {
@@ -36,7 +32,6 @@
     "@typescript-eslint/parser": "^6.17.0",
     "eslint": "^8.56.0",
     "jest": "^29.7.0",
-    "prisma": "^5.7.1",
     "serverless": "^3.38.0",
     "serverless-offline": "^13.3.0",
     "ts-jest": "^29.1.1",

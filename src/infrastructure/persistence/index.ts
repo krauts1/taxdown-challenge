@@ -1,3 +1,3 @@
-export * from './prisma-customer.repository';
-export { default as prisma } from './prisma-client';
+export * from './supabase-customer.repository';
+export { supabase } from './supabase-client';
 

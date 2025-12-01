@@ -1,13 +1,13 @@
 import { build } from '../../src/infrastructure/http/server';
 import { FastifyInstance } from 'fastify';
-import prisma from '../../src/infrastructure/persistence/prisma-client';
+import { supabase } from '../../src/infrastructure/persistence/supabase-client';
 
 describe('Customer E2E Tests', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    if (!process.env.DATABASE_URL?.startsWith('postgresql://')) {
-      console.log('Skipping E2E tests: DATABASE_URL not configured');
+    if (!process.env.SUPABASE_URL) {
+      console.log('Skipping E2E tests: SUPABASE_URL not configured');
       return;
     }
     app = await build();
@@ -15,8 +15,16 @@ describe('Customer E2E Tests', () => {
   }, 30000);
 
   afterEach(async () => {
-    if (process.env.DATABASE_URL?.startsWith('postgresql://')) {
-      await prisma.customer.deleteMany();
+    if (process.env.SUPABASE_URL) {
+      const testEmails = await supabase
+        .from('customers')
+        .select('id')
+        .like('email', '%@example.com');
+      
+      if (testEmails.data && testEmails.data.length > 0) {
+        const ids = testEmails.data.map(c => c.id);
+        await supabase.from('customers').delete().in('id', ids);
+      }
     }
   });
 
@@ -24,14 +32,11 @@ describe('Customer E2E Tests', () => {
     if (app) {
       await app.close();
     }
-    if (process.env.DATABASE_URL?.startsWith('postgresql://')) {
-      await prisma.$disconnect();
-    }
   });
 
   describe('POST /customers', () => {
     it('should create a customer', async () => {
-      if (!process.env.DATABASE_URL?.startsWith('postgresql://') || !app) {
+      if (!process.env.SUPABASE_URL || !app) {
         return;
       }
       const uniqueEmail = `john-${Date.now()}@example.com`;
@@ -54,7 +59,7 @@ describe('Customer E2E Tests', () => {
     });
 
     it('should return 400 if email already exists', async () => {
-      if (!process.env.DATABASE_URL?.startsWith('postgresql://') || !app) {
+      if (!process.env.SUPABASE_URL || !app) {
         return;
       }
       await app.inject({
@@ -83,7 +88,7 @@ describe('Customer E2E Tests', () => {
     });
 
     it('should return 400 for invalid email', async () => {
-      if (!process.env.DATABASE_URL?.startsWith('postgresql://') || !app) {
+      if (!process.env.SUPABASE_URL || !app) {
         return;
       }
       const response = await app.inject({
@@ -102,7 +107,7 @@ describe('Customer E2E Tests', () => {
 
   describe('GET /customers/:id', () => {
     it('should get customer by id', async () => {
-      if (!process.env.DATABASE_URL?.startsWith('postgresql://') || !app) {
+      if (!process.env.SUPABASE_URL || !app) {
         return;
       }
       const createResponse = await app.inject({
@@ -129,7 +134,7 @@ describe('Customer E2E Tests', () => {
     });
 
     it('should return 404 if customer not found', async () => {
-      if (!process.env.DATABASE_URL?.startsWith('postgresql://') || !app) {
+      if (!process.env.SUPABASE_URL || !app) {
         return;
       }
       const response = await app.inject({
@@ -143,7 +148,7 @@ describe('Customer E2E Tests', () => {
 
   describe('POST /customers/:id/credit', () => {
     it('should add credit to customer', async () => {
-      if (!process.env.DATABASE_URL?.startsWith('postgresql://') || !app) {
+      if (!process.env.SUPABASE_URL || !app) {
         return;
       }
       const createResponse = await app.inject({
@@ -172,7 +177,7 @@ describe('Customer E2E Tests', () => {
     });
 
     it('should return 400 if customer not found', async () => {
-      if (!process.env.DATABASE_URL?.startsWith('postgresql://') || !app) {
+      if (!process.env.SUPABASE_URL || !app) {
         return;
       }
       const response = await app.inject({
@@ -189,7 +194,7 @@ describe('Customer E2E Tests', () => {
 
   describe('GET /customers?sort=desc', () => {
     it('should return customers sorted by credit descending', async () => {
-      if (!process.env.DATABASE_URL?.startsWith('postgresql://') || !app) {
+      if (!process.env.SUPABASE_URL || !app) {
         return;
       }
       const timestamp = Date.now();

@@ -1,4 +1,4 @@
-import { PrismaCustomerRepository } from '../persistence/prisma-customer.repository';
+import { SupabaseCustomerRepository } from '../persistence/supabase-customer.repository';
 import {
   CreateCustomerUseCase,
   GetCustomerUseCase,
@@ -8,7 +8,7 @@ import {
   ListCustomersSortedUseCase,
 } from '../../application/customer';
 
-const customerRepository = new PrismaCustomerRepository();
+const customerRepository = new SupabaseCustomerRepository();
 
 export const createCustomerUseCase = new CreateCustomerUseCase(customerRepository);
 export const getCustomerUseCase = new GetCustomerUseCase(customerRepository);

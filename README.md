@@ -4,7 +4,7 @@ API REST para gestión de clientes de una tienda online de motocicletas.
 
 ## Arquitectura
 
-Usé DDD y Arquitectura Hexagonal. TypeScript con Node.js, Fastify, Prisma y PostgreSQL. Para el deployment usé Serverless Framework.
+Usé DDD y Arquitectura Hexagonal. TypeScript con Node.js, Fastify, Supabase Client y PostgreSQL. Para el deployment usé Serverless Framework.
 
 ## Estructura del Proyecto
 
@@ -22,7 +22,6 @@ challenge_taxdown/
 │       ├── persistence/
 │       ├── http/
 │       └── serverless/
-├── prisma/
 ├── tests/
 └── serverless.yml
 ```
@@ -53,24 +52,36 @@ npm install
 cp .env.example .env
 ```
 
-Editar `.env` con tu connection string de PostgreSQL:
+Editar `.env` con tus credenciales de Supabase:
 ```
-DATABASE_URL="postgresql://user:password@host:5432/database?schema=public"
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_ANON_KEY=tu-anon-key
+SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
 PORT=3000
 LOG_LEVEL=info
 ```
 
-4. Generar Prisma Client:
+Para obtener las credenciales, ve a tu proyecto en Supabase Dashboard -> Settings -> API
+
+4. Crear la tabla en Supabase (si no existe):
+
+Si ya tienes la tabla creada desde Prisma, puedes saltar este paso.
+
+**Opción A: Desde Supabase Dashboard (Recomendado)**
+1. Ve a tu proyecto en Supabase Dashboard
+2. Ve a **SQL Editor**
+3. Copia y pega el contenido de `supabase/migrations/001_create_customers_table.sql`
+4. Ejecuta el query
+
+**Opción B: Desde Supabase CLI**
 ```bash
-npm run prisma:generate
+npm install -g supabase
+supabase login
+supabase link --project-ref tu-project-ref
+supabase db push
 ```
 
-5. Ejecutar migraciones:
-```bash
-npm run prisma:migrate
-```
-
-6. Iniciar servidor de desarrollo:
+5. Iniciar servidor de desarrollo:
 ```bash
 npm run dev
 ```
@@ -245,9 +256,6 @@ npx serverless offline
 - `npm run dev` - Servidor de desarrollo con hot reload
 - `npm run build` - Compilar TypeScript
 - `npm run start` - Iniciar servidor en producción
-- `npm run prisma:generate` - Generar Prisma Client
-- `npm run prisma:migrate` - Ejecutar migraciones
-- `npm run prisma:studio` - Abrir Prisma Studio
 - `npm test` - Ejecutar tests
 - `npm run deploy` - Deploy a AWS Lambda
 - `npm run deploy:dev` - Deploy a desarrollo
@@ -259,7 +267,7 @@ npx serverless offline
 - Runtime: Node.js
 - Language: TypeScript
 - Framework: Fastify
-- ORM: Prisma
+- Database Client: Supabase Client
 - Database: PostgreSQL (Supabase)
 - Deployment: Serverless Framework + AWS Lambda
 - Testing: Jest
