@@ -1,6 +1,9 @@
+import { config } from 'dotenv';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { customerRoutes } from './routes/customer.routes';
+
+config();
 
 const server = Fastify({
   logger: {
