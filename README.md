@@ -2,6 +2,8 @@
 
 API REST para gestión de clientes de una tienda online de motocicletas.
 
+**URL de Producción:** https://taxdown-challenge-psi.vercel.app
+
 ## Arquitectura
 
 Usé DDD y Arquitectura Hexagonal. TypeScript con Node.js, Fastify, Supabase Client y PostgreSQL. Para el deployment usé Vercel.
@@ -197,39 +199,41 @@ Los unitarios siempre pasan. Los de integración y E2E necesitan la BD configura
 
 ## Deployment con Vercel
 
-### Prerrequisitos
+### URL de Producción
 
-- Cuenta de Vercel (gratuita)
-- Vercel CLI instalado (opcional):
-```bash
-npm install -g vercel
-```
+La API está desplegada en: **https://taxdown-challenge-psi.vercel.app**
 
-### Configuración
+### Guía de Despliegue
 
-1. Configurar variables de entorno en Vercel:
-   - Ve a tu proyecto en Vercel Dashboard
-   - Settings -> Environment Variables
-   - Agrega:
-     - `SUPABASE_URL`
-     - `SUPABASE_ANON_KEY`
-     - `SUPABASE_SERVICE_ROLE_KEY` (opcional)
-     - `LOG_LEVEL` (opcional)
+Seguí estos pasos para desplegar la aplicación en Vercel:
 
-2. Deploy:
-```bash
-# Deploy usando Vercel CLI
-vercel
+1. **Subir el proyecto a Git con la configuración de Vercel:**
+   - Asegúrate de tener los archivos `vercel.json` y `api/index.ts` en el repositorio
+   - Haz commit y push de todos los cambios:
+   ```bash
+   git add .
+   git commit -m "Add Vercel configuration"
+   git push origin main
+   ```
 
-# Deploy a producción
-vercel --prod
-```
+2. **Crear un proyecto nuevo en Vercel y referenciarlo al proyecto en Git:**
+   - Ve a [Vercel Dashboard](https://vercel.com/dashboard)
+   - Haz clic en "Add New Project"
+   - Conecta tu repositorio de GitHub
+   - Selecciona el repositorio del proyecto
+   - Vercel detectará automáticamente la configuración de `vercel.json`
 
-O conecta tu repositorio de GitHub en Vercel Dashboard para deploy automático en cada push.
+3. **En la configuración del deploy agregar variables de entorno:**
+   - En la pantalla de configuración del proyecto, ve a "Environment Variables"
+   - Agrega las siguientes variables:
+     - `SUPABASE_URL` - URL de tu proyecto Supabase
+     - `SUPABASE_ANON_KEY` - Clave anónima de Supabase
+     - `SUPABASE_SERVICE_ROLE_KEY` (opcional) - Clave de service role
 
-### Variables de Entorno
-
-Configura las variables de entorno en Vercel Dashboard -> Settings -> Environment Variables. Las variables se aplican automáticamente en cada deploy.
+4. **Iniciar el deploy:**
+   - Haz clic en "Deploy"
+   - Vercel construirá y desplegará la aplicación automáticamente
+   - Una vez completado, obtendrás la URL de producción
 
 ## Scripts Disponibles
 
