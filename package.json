@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "vercel-build": "prisma generate && tsc",
     "dev": "tsx watch src/infrastructure/http/server.ts",
     "start": "node dist/infrastructure/http/server.js",
     "prisma:generate": "prisma generate",
@@ -25,6 +26,7 @@
     "@fastify/aws-lambda": "^3.5.0",
     "@fastify/cors": "^9.0.1",
     "@prisma/client": "^5.7.1",
+    "@vercel/node": "^3.0.7",
     "fastify": "^4.25.2"
   },
   "devDependencies": {
