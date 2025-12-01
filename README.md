@@ -4,7 +4,7 @@ API REST para gestión de clientes de una tienda online de motocicletas.
 
 ## Arquitectura
 
-Usé DDD y Arquitectura Hexagonal. TypeScript con Node.js, Fastify, Supabase Client y PostgreSQL. Para el deployment usé Serverless Framework.
+Usé DDD y Arquitectura Hexagonal. TypeScript con Node.js, Fastify, Supabase Client y PostgreSQL. Para el deployment usé Vercel.
 
 ## Estructura del Proyecto
 
@@ -20,10 +20,10 @@ challenge_taxdown/
 │   │   └── dtos/
 │   └── infrastructure/
 │       ├── persistence/
-│       ├── http/
-│       └── serverless/
+│       └── http/
+├── api/
 ├── tests/
-└── serverless.yml
+└── vercel.json
 ```
 
 ## Setup Local
@@ -195,61 +195,41 @@ npm test -- tests/unit/application/create-customer.test.ts
 
 Los unitarios siempre pasan. Los de integración y E2E necesitan la BD configurada. Si no tienes `DATABASE_URL`, se saltan automáticamente.
 
-## Deployment con Serverless Framework
+## Deployment con Vercel
 
 ### Prerrequisitos
 
-- AWS CLI configurado
-- Credenciales AWS configuradas
-- Serverless Framework instalado globalmente (opcional):
+- Cuenta de Vercel (gratuita)
+- Vercel CLI instalado (opcional):
 ```bash
-npm install -g serverless
+npm install -g vercel
 ```
 
 ### Configuración
 
-1. Configurar variables de entorno en AWS o en `serverless.yml`:
-```yaml
-environment:
-  DATABASE_URL: ${env:DATABASE_URL}
-  LOG_LEVEL: ${env:LOG_LEVEL, 'info'}
-```
+1. Configurar variables de entorno en Vercel:
+   - Ve a tu proyecto en Vercel Dashboard
+   - Settings -> Environment Variables
+   - Agrega:
+     - `SUPABASE_URL`
+     - `SUPABASE_ANON_KEY`
+     - `SUPABASE_SERVICE_ROLE_KEY` (opcional)
+     - `LOG_LEVEL` (opcional)
 
-2. Compilar TypeScript:
+2. Deploy:
 ```bash
-npm run build
-```
-
-3. Deploy:
-```bash
-# Deploy a desarrollo
-npm run deploy:dev
+# Deploy usando Vercel CLI
+vercel
 
 # Deploy a producción
-npm run deploy:prod
-
-# Deploy sin especificar stage
-npm run deploy
+vercel --prod
 ```
 
-4. Remover deployment:
-```bash
-npm run remove
-```
+O conecta tu repositorio de GitHub en Vercel Dashboard para deploy automático en cada push.
 
-### Variables de Entorno en AWS
+### Variables de Entorno
 
-Puedes configurar las variables de varias formas. En serverless.yml como arriba, o usando Parameter Store o Secrets Manager si prefieres.
-
-### Testing Local con Serverless Offline
-
-```bash
-# Instalar plugin
-npm install -D serverless-offline
-
-# Ejecutar localmente
-npx serverless offline
-```
+Configura las variables de entorno en Vercel Dashboard -> Settings -> Environment Variables. Las variables se aplican automáticamente en cada deploy.
 
 ## Scripts Disponibles
 
@@ -257,10 +237,7 @@ npx serverless offline
 - `npm run build` - Compilar TypeScript
 - `npm run start` - Iniciar servidor en producción
 - `npm test` - Ejecutar tests
-- `npm run deploy` - Deploy a AWS Lambda
-- `npm run deploy:dev` - Deploy a desarrollo
-- `npm run deploy:prod` - Deploy a producción
-- `npm run remove` - Remover deployment de AWS
+- `npm run vercel-build` - Build para Vercel
 
 ## Tecnologías
 
@@ -269,6 +246,6 @@ npx serverless offline
 - Framework: Fastify
 - Database Client: Supabase Client
 - Database: PostgreSQL (Supabase)
-- Deployment: Serverless Framework + AWS Lambda
+- Deployment: Vercel
 - Testing: Jest
 
