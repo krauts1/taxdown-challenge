@@ -1,4 +1,4 @@
-# TaxDown Senior Backend Challenge
+# TaxDown Challenge
 
 API REST para gestión de clientes de una tienda online de motocicletas.
 
