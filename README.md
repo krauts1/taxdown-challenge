@@ -38,11 +38,7 @@ challenge_taxdown/
 
 ### Instalación
 
-1. Clonar el repositorio:
-```bash
-git clone <repo-url>
-cd challenge_taxdown
-```
+1. Clonar el repositorio.
 
 2. Instalar dependencias:
 ```bash
